@@ -43,3 +43,35 @@ describe("/api/topics", () => {
             });
     });
 });
+
+describe.only("/api/articles", () => {
+    test("GET: 200 - serves an array of all articles", () => {
+        return request(app)
+            .get("/api/articles")
+            .expect(200)
+            .then((res) => {
+                const { articles } = res.body;
+                expect(articles).toBeInstanceOf(Array);
+                articles.forEach((article) => {
+                    expect(article).toMatchObject({
+                        author: expect.any(String),
+                        title: expect.any(String),
+                        article_id: expect.any(Number),
+                        topic: expect.any(String),
+                        created_at: expect.any(String),
+                        votes: expect.any(Number),
+                        comment_count: expect.any(Number)
+                    });
+                });
+            });
+    });
+    
+    test("GET: 404 - Bad request!", () => {
+        return request(app)
+            .get("/api/articles/badrequest")
+            .expect(404)
+            .then(({body}) => {
+                expect(body.msg).toBe("Bad request!");
+            });
+    });
+});
