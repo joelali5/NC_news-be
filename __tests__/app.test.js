@@ -44,7 +44,7 @@ describe("/api/topics", () => {
     });
 });
 
-describe.only("/api/articles", () => {
+describe("/api/articles", () => {
     test("GET: 200 - serves an array of all articles", () => {
         return request(app)
             .get("/api/articles")
