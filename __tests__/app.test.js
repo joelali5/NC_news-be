@@ -44,7 +44,7 @@ describe("/api/topics", () => {
     });
 });
 
-describe("/api/articles", () => {
+describe.only("/api/articles", () => {
     test("GET: 200 - serves an array of all articles", () => {
         return request(app)
             .get("/api/articles")
@@ -73,5 +73,24 @@ describe("/api/articles", () => {
             .then(({body}) => {
                 expect(body.msg).toBe("Bad request!");
             });
+    });
+
+    test("GET: 200 - can sort the articles by the specified sort_by value", () => {
+        return request(app)
+          .get("/api/articles?sort_by=created_at")
+          .expect(200)
+          .then((res) => {
+            const { articles } = res.body
+            expect(articles).toBeSortedBy("created_at", {descending: true});
+          });
+      });
+
+    test('GET: 400 - Invalid sort query', () => {
+    return request(app)
+        .get('/api/articles?sort_by=created_at; DROP TABLE articles')
+        .expect(400)
+        .then(({body}) => {
+        expect(body.msg).toBe('invalid sort query!')
+        });
     });
 });
