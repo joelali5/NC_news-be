@@ -44,7 +44,7 @@ describe("/api/topics", () => {
     });
 });
 
-describe.only("/api/articles", () => {
+describe("/api/articles", () => {
     test("GET: 200 - serves an array of all articles", () => {
         return request(app)
             .get("/api/articles")
@@ -68,7 +68,7 @@ describe.only("/api/articles", () => {
     
     test("GET: 404 - Bad request!", () => {
         return request(app)
-            .get("/api/articles/badrequest")
+            .get("/api/articlesbadrequest")
             .expect(404)
             .then(({body}) => {
                 expect(body.msg).toBe("Bad request!");
@@ -92,5 +92,34 @@ describe.only("/api/articles", () => {
         .then(({body}) => {
         expect(body.msg).toBe('invalid sort query!')
         });
+    });
+});
+
+describe('/api/articles/:article_id', () => {
+    test('GET: 200 - get an article from the articles table by a specified article_id', () => {
+        const articleID = 2
+        return request(app)
+            .get(`/api/articles/${articleID}`)
+            .expect(200)
+            .then((res) => {
+                const {result} = res.body;
+                expect(result).toMatchObject({
+                    author: expect.any(String),
+                    title: expect.any(String),
+                    body: expect.any(String),
+                    article_id: expect.any(Number),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: expect.any(Number)
+                });
+            });
+    });
+    test('GET: 400 - Bad request!', () => {
+        return request(app)
+            .get('/api/articles/NotAnId')
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe("Bad request!")
+            });
     });
 });
