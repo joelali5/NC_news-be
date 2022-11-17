@@ -123,3 +123,49 @@ describe('/api/articles/:article_id', () => {
             });
     });
 });
+
+
+describe('/api/articles/:article_id/comments', () => {
+    test('GET: 200 - responds with an array of comments with the specified article_id', () => {
+        return request(app)
+            .get('/api/articles/1/comments')
+            .expect(200)
+            .then((res) => {
+                expect(res.body.comments).toHaveLength(11);
+                res.body.comments.forEach(comment => {
+                    expect(comment).toMatchObject({
+                        comment_id: expect.any(Number),
+                        article_id: 1,
+                        author: expect.any(String),
+                        votes: expect.any(Number),
+                        created_at: expect.any(String),
+                        body: expect.any(String)
+                    });
+                })
+            });
+    });
+    test('GET: 200 - responds with an empty array when article has no comment', () => {
+        return request(app)
+            .get('/api/articles/2/comments')
+            .expect(200)
+            .then(res => {
+                expect(res.body.comments).toEqual([]);
+            });
+    });
+    test('GET: 404 - valid but non-existent article_id', () => {
+        return request(app)
+            .get('/api/articles/1000/comments')
+            .expect(404)
+            .then(({body}) => {
+                expect(body.msg).toBe("articles not found!");
+            })
+    });
+    test('GET: 400 - Bad request!', () => {
+        return request(app)
+            .get('/api/articles/NotAnId/comments')
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe("Bad request!")
+            });
+    });
+});
