@@ -2,7 +2,8 @@ const { getArticleById } = require("../controllers/controllers");
 const { query } = require("../db/connection");
 const db = require("../db/connection");
 const { articleData } = require("../db/data/test-data");
-const checkArticlesExists = require("../utils/db");
+const {checkArticlesExists, checkUserExists} = require("../utils/db");
+
 
 exports.fetchTopics = () => {
     let query = 'SELECT * FROM topics';
@@ -79,14 +80,14 @@ exports.insertComment = (article_id, comment) => {
     if(!username || !body){
         return Promise.reject({
             status: 400,
-            msg: "Deformed comment!"
+            msg: "Bad request!"
         });
     };
-    return checkArticlesExists(article_id)
-        .then(() => {
-            return db.query("INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;", [username, body, article_id])
+    
+    return checkArticlesExists(article_id).then(() => {
+        return checkUserExists(username).then(() => {
+            return db.query("INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;", [username, body, article_id])}).then(result => {
+                return result.rows[0];
         })
-        .then(result => {
-            return result.rows[0];
-        });
+    });
 };
