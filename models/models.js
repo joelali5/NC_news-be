@@ -48,6 +48,12 @@ exports.fetchArticleById = (article_id) => {
 };
 
 exports.fetchCommentsByArticleId = (article_id) => {
+    if(isNaN(article_id)){
+        return Promise.reject({
+            status: 400,
+            msg: "Bad request!"
+        });
+    };
     return checkArticlesExists(article_id)
         .then(() => {
             return db.query(
