@@ -67,3 +67,26 @@ exports.fetchCommentsByArticleId = (article_id) => {
             return result.rows;
         });
 }
+
+exports.insertComment = (article_id, comment) => {
+    if(isNaN(article_id)){
+        return Promise.reject({
+            status: 400,
+            msg: "Bad request!"
+        });
+    };
+    const {username, body} = comment;
+    if(!username || !body){
+        return Promise.reject({
+            status: 400,
+            msg: "Deformed comment!"
+        });
+    };
+    return checkArticlesExists(article_id)
+        .then(() => {
+            return db.query("INSERT INTO comments (author, body, article_id) VALUES ($1, $2, $3) RETURNING *;", [username, body, article_id])
+        })
+        .then(result => {
+            return result.rows[0];
+        });
+};

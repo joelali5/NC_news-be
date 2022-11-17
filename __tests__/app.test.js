@@ -169,3 +169,62 @@ describe('/api/articles/:article_id/comments', () => {
             });
     });
 });
+
+describe("/api/articles/:article_id/comments", () => {
+    test("POST: 201 - responds with an object containing the new comment and a username", () => {
+      const newComment = {
+        username: "lurker",
+        body: "This morning, I showered for nine minutes."
+      };
+
+      return request(app)
+        .post("/api/articles/1/comments")
+        .send(newComment)
+        .expect(201)
+        .then(({body}) => {
+            expect(body.comment).toMatchObject({
+                comment_id: expect.any(Number),
+                body: expect.any(String),
+                article_id: expect.any(Number),
+                author: expect.any(String),
+                votes: expect.any(Number),
+                created_at: expect.any(String)
+            });
+        });
+    });
+    test('POST: 400 - Bad request!', () => {
+        const newComment = {
+            username: "lurker",
+            body: "This morning, I showered for nine minutes."
+        };
+        return request(app)
+            .post('/api/articles/NotAnId/comments')
+            .send(newComment)
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe("Bad request!")
+            });
+    });
+    test('GET: 400 - Bad request!', () => {
+        const newComment = {};
+        return request(app)
+            .post('/api/articles/1/comments')
+            .send(newComment)
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe("Deformed comment!")
+            });
+    });
+    test('GET: 400 - Bad request!', () => {
+        const newComment = {
+            body: "This morning, I showered for nine minutes."
+          };
+        return request(app)
+            .post('/api/articles/1/comments')
+            .send(newComment)
+            .expect(400)
+            .then(({body}) => {
+                expect(body.msg).toBe("Deformed comment!")
+            });
+    });
+  });
