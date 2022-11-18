@@ -1,5 +1,12 @@
 const express = require("express");
-const {getTopics, getArticles, getArticleById, getCommentsByArticleId, postComment, patchArticle} = require("./controllers/controllers");
+const {getTopics,
+    getArticles,
+    getArticleById,
+    getCommentsByArticleId,
+    postComment,
+    patchArticle,
+    getUsers
+} = require("./controllers/controllers");
 
 const app = express();
 
@@ -11,6 +18,7 @@ app.get('/api/articles/:article_id', getArticleById);
 app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
 app.post('/api/articles/:article_id/comments', postComment);
 app.patch('/api/articles/:article_id', patchArticle);
+app.get('/api/users', getUsers);
 
 app.all("/*", (req, res) => {
     res.status(404).send({msg: "Bad request!"})
