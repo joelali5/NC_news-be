@@ -1,4 +1,4 @@
-const {fetchTopics, fetchArticles, fetchArticleById, fetchCommentsByArticleId, insertComment} = require("../models/models");
+const {fetchTopics, fetchArticles, fetchArticleById, fetchCommentsByArticleId, insertComment, updateArticle} = require("../models/models");
 
 
 exports.getTopics = (req, res, next) => {
@@ -49,4 +49,13 @@ exports.postComment = (req, res, next) => {
     .catch(err => {
         next(err);
     })
+};
+
+exports.patchArticle = (req, res, next) => {
+    const {article_id} = req.params;
+    updateArticle(article_id, req.body).then(article => {
+        res.status(201).send({article : article});
+    }).catch(err => {
+        next(err);
+    });
 };
