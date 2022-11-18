@@ -241,3 +241,66 @@ describe("/api/articles/:article_id/comments", () => {
       });
   });
 });
+
+describe("/api/articles/:article_id", () => {
+    test("PATCH - 201: update the corresponding article when passed the article's id", () => {
+        const incrementVotes = {inc_votes: 3}
+        return request(app)
+            .patch("/api/articles/1")
+            .send(incrementVotes)
+            .expect(201)
+            .then(res => {
+                const {article} = res.body
+                const updateArticle = {
+                    article_id: 1,
+                    title: expect.any(String),
+                    author: expect.any(String),
+                    body: expect.any(String),
+                    topic: expect.any(String),
+                    created_at: expect.any(String),
+                    votes: 103
+                }
+                expect(article).toMatchObject(updateArticle);
+            })
+    });
+    test("PATCH: 400 - Sending an empty body to the db", () => {
+        const incrementVotes = {};
+        return request(app)
+          .patch("/api/articles/1")
+          .send(incrementVotes)
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid input");
+          });
+    });
+    test("PATCH: 400 - Sending an invalid type", () => {
+        const incrementVotes = {inc_votes: 'three'};
+        return request(app)
+          .patch("/api/articles/1")
+          .send(incrementVotes)
+          .expect(400)
+          .then(({ body }) => {
+            expect(body.msg).toBe("Invalid input");
+          });
+    });
+    test("PATCH: 400 - Invalid input", () => {
+      const incrementVotes = { inc_votes: 3};
+      return request(app)
+        .patch("/api/articles/NotAnId")
+        .send(incrementVotes)
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Invalid input");
+        });
+    });
+    test("PATCH: 404 - Bad request!", () => {
+      const incrementVotes = { inc_votes: 3};
+      return request(app)
+        .patch("/api/articles/10000")
+        .send(incrementVotes)
+        .expect(404)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Article not found!");
+        });
+    });
+})
