@@ -19,7 +19,9 @@ exports.getTopics = (req, res, next) => {
 
 exports.getArticles = (req, res, next) => {
     const {sort_by} = req.query;
-    fetchArticles(sort_by).then(result => {
+    const {order} = req.query;
+    const {topic} = req.query;
+    fetchArticles(sort_by, order, topic).then(result => {
         res.status(200).send({articles: result});
     })
     .catch(err => {
