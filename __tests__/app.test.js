@@ -258,7 +258,7 @@ describe("/api/articles/:article_id", () => {
                     body: expect.any(String),
                     topic: expect.any(String),
                     created_at: expect.any(String),
-                    votes: expect.any(Number)
+                    votes: 103
                 }
                 expect(article).toMatchObject(updateArticle);
             })
@@ -270,7 +270,7 @@ describe("/api/articles/:article_id", () => {
           .send(incrementVotes)
           .expect(400)
           .then(({ body }) => {
-            expect(body.msg).toBe("Bad request!");
+            expect(body.msg).toBe("Invalid input");
           });
     });
     test("PATCH: 400 - Sending an invalid type", () => {
@@ -280,17 +280,17 @@ describe("/api/articles/:article_id", () => {
           .send(incrementVotes)
           .expect(400)
           .then(({ body }) => {
-            expect(body.msg).toBe("Bad request!");
+            expect(body.msg).toBe("Invalid input");
           });
     });
-    test("PATCH: 400 - Bad request!", () => {
+    test("PATCH: 400 - Invalid input", () => {
       const incrementVotes = { inc_votes: 3};
       return request(app)
         .patch("/api/articles/NotAnId")
         .send(incrementVotes)
         .expect(400)
         .then(({ body }) => {
-          expect(body.msg).toBe("Bad request!");
+          expect(body.msg).toBe("Invalid input");
         });
     });
     test("PATCH: 404 - Bad request!", () => {
