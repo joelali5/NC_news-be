@@ -104,3 +104,10 @@ exports.updateArticle = (article_id, votes) => {
         return result.rows[0];
     });
 }
+
+exports.fetchUsers = () => {
+    return db.query('SELECT * FROM users')  
+        .then(results => {
+            return results.rows;
+        })
+}
