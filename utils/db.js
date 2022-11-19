@@ -12,16 +12,27 @@ const checkArticlesExists = (article_id) => {
 }
 
 const checkUserExists = (username) => {
-    return db
-      .query(`SELECT * FROM users WHERE username = $1;`, [username])
-      .then((result) => {
-        if (result.rows.length === 0) {
-          return Promise.reject({
-            status: 404,
-            msg: "username not found!",
-          });
-        }
-      });
-  };
+  return db
+    .query(`SELECT * FROM users WHERE username = $1;`, [username])
+    .then((result) => {
+      if (result.rows.length === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "username not found!",
+        });
+      }
+    });
+};
 
-module.exports = {checkArticlesExists, checkUserExists};
+const checkTopicExists = (topic) => {
+  return db.query(`SELECT * FROM topics WHERE slug = $1;`, [topic])
+    .then(result => {
+      if(result.rows.length === 0){
+        return Promise.reject({
+          status: 404,
+          msg: "topic not found!"
+        });
+      };
+    });
+};
+module.exports = {checkArticlesExists, checkUserExists, checkTopicExists};

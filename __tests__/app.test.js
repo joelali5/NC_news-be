@@ -85,6 +85,28 @@ describe("/api/articles", () => {
       });
   });
 
+  test("GET: 200 - can sort the articles by the specified sort_by value", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then((res) => {
+        const { articles } = res.body;
+        articles.forEach(article => {
+          expect(article.topic).toBe("mitch");
+        })
+      });
+  });
+
+  test("GET: 200 - responds with an empty array when give a valid topic with no articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then(res => {
+        const {articles} = res.body;
+        expect(articles).toEqual([]);
+      })
+  })
+
   test("GET: 400 - Invalid sort query", () => {
     return request(app)
       .get("/api/articles?sort_by=created_at; DROP TABLE articles")
@@ -93,7 +115,26 @@ describe("/api/articles", () => {
         expect(body.msg).toBe("invalid sort query!");
       });
   });
+  test("GET: 400 - Invalid sort query", () => {
+    return request(app)
+      .get("/api/articles?sort_by=apple")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid sort query!");
+      });
+  });
+
+  test("GET: 400 - Bad request", () => {
+    return request(app)
+      .get("/api/articles?order=apple")
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toBe("invalid sort query!");
+      });
+  });
+
 });
+
 
 describe("/api/articles/:article_id", () => {
   test("GET: 200 - get an article from the articles table by a specified article_id", () => {
