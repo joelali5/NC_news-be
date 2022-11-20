@@ -132,6 +132,14 @@ describe("/api/articles", () => {
         expect(body.msg).toBe("invalid sort query!");
       });
   });
+  // test("GET: 404 - Topic not found", () => {
+  //   return request(app)
+  //     .get("/api/articles?topic=joel")
+  //     .expect(404)
+  //     .then(({ body }) => {
+  //       expect(body.msg).toBe("Topic not found!");
+  //     });
+  // });
 
 });
 
@@ -152,6 +160,7 @@ describe("/api/articles/:article_id", () => {
           topic: expect.any(String),
           created_at: expect.any(String),
           votes: expect.any(Number),
+          comment_count: expect.any(Number)
         });
       });
   });

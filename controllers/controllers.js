@@ -65,7 +65,6 @@ exports.patchArticle = (req, res, next) => {
     updateArticle(article_id, req.body).then(article => {
         res.status(201).send({article : article});
     }).catch(err => {
-        // console.log(err)
         next(err);
     });
 };

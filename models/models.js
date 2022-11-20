@@ -17,6 +17,8 @@ exports.fetchArticles = (sort_by = "created_at", order="desc", topic) => {
     const columns = ["created_at", "title", "topic", "author", "body", "votes"];
     const validOrder = ["asc", "desc"]
 
+
+
     if(!columns.includes(sort_by) || !validOrder.includes(order)){
         return Promise.reject({
             status: 400,
@@ -25,16 +27,19 @@ exports.fetchArticles = (sort_by = "created_at", order="desc", topic) => {
     };
     let queryStr = `
             SELECT articles.*, COUNT(comments.article_id)::INT AS comment_count FROM articles
-            LEFT JOIN comments ON comments.article_id = articles.article_id`;
-        const queryValue = [];
+            LEFT JOIN comments ON comments.article_id = articles.article_id
+        `;
 
-        if(topic){
-            queryStr += ` WHERE topic = $1`;
-            queryValue.push(topic);
-        }
-        queryStr += ` GROUP BY comments.article_id, articles.article_id`;
-        queryStr += ` ORDER BY ${sort_by} ${order}`;
+    const queryValue = [];
     
+    if(topic){
+        queryStr += ` WHERE topic = $1`;
+        queryValue.push(topic);
+    }
+
+    queryStr += ` GROUP BY comments.article_id, articles.article_id`;
+    queryStr += ` ORDER BY ${sort_by} ${order}`;
+
     return db.query(queryStr, queryValue)
     .then(results => {
         return results.rows;
@@ -44,7 +49,12 @@ exports.fetchArticles = (sort_by = "created_at", order="desc", topic) => {
 exports.fetchArticleById = (article_id) => {
     if(!isNaN(article_id)){
         return db
-            .query('SELECT * FROM articles WHERE article_id = $1;', [article_id])
+        // SELECT * FROM articles WHERE article_id = $1
+            .query(`
+                SELECT articles.*, COUNT(comments.article_id)::INT AS comment_count FROM articles
+                LEFT JOIN comments ON comments.article_id = articles.article_id
+                WHERE articles.article_id = $1
+                GROUP BY comments.article_id, articles.article_id;`, [article_id])
             .then(result => {
                 return result.rows[0];
             });
