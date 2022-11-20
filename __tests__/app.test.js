@@ -382,3 +382,30 @@ describe("/api/users", () => {
       });
   });
 });
+
+describe("/api/comments/comment_id", () => {
+  test("DELETE: 204 - Delete the comment with the corresponding comment id and responds with no content status", () => {
+    return request(app)
+      .delete('/api/comments/1')
+      .expect(204)
+      .then((res) => {
+        expect(res.body).toEqual({});
+      })
+  })
+  test("DELETE: 404 - Id does not exist", () => {
+    return request(app)
+      .delete('/api/comments/10000')
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Comment id not found!");
+      });
+  });
+  test("DELETE: 400 - Invalid ID", () => {
+    return request(app)
+      .delete('/api/comments/NotANumber')
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid Id!");
+      });
+  });
+});

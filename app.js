@@ -5,7 +5,8 @@ const {getTopics,
     getCommentsByArticleId,
     postComment,
     patchArticle,
-    getUsers
+    getUsers,
+    deleteCommentById
 } = require("./controllers/controllers");
 
 const app = express();
@@ -19,6 +20,7 @@ app.get('/api/articles/:article_id/comments', getCommentsByArticleId);
 app.post('/api/articles/:article_id/comments', postComment);
 app.patch('/api/articles/:article_id', patchArticle);
 app.get('/api/users', getUsers);
+app.delete('/api/comments/:comment_id', deleteCommentById);
 
 app.all("/*", (req, res) => {
     res.status(404).send({msg: "Bad request!"})
