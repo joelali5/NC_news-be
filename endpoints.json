@@ -10,7 +10,7 @@
     }
   },
   "GET /api/articles": {
-    "description": "serves an array of all topics",
+    "description": "serves an array of all articles",
     "queries": ["author", "topic", "sort_by", "order"],
     "exampleResponse": {
       "articles": [
@@ -22,6 +22,78 @@
           "created_at": 1527695953341
         }
       ]
+    }
+  },
+  "GET /api/articles/:article_id": {
+    "description": "serves a single article based on the id provided",
+    "queries": [],
+    "exampleResponse": {
+      "article": 
+        {
+          "title": "Seafood substitutions are increasing",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": 1527695953341
+        }
+    }
+  },
+  "GET /api/articles/:article_id/comments": {
+    "description": "returns the comments on an article based on the article_id supplied",
+    "queries": [],
+    "exampleResponse": {
+      "comment": 
+        {
+          "comment_id": 3,
+          "article_id": 1,
+          "author": "weegembump",
+          "votes": 12,
+          "created_at": 1527695953341,
+          "body": "Text from the article.."
+        }
+    }
+  },
+  "POST /api/articles/:article_id/comments": {
+    "description": "responds with an object with a new comment and a username",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {
+        "username": "lurker",
+        "body": "This morning, I showered for nine minutes"
+      }
+    }
+  },
+  "PATCH /api/articles/:article_id": {
+    "description": "Responds with an updated article based on the article_id provided",
+    "queries": [],
+    "exampleResponse": {
+      "article": {
+        "title": "Seafood substitutions are increasing",
+        "topic": "cooking",
+        "author": "weegembump",
+        "body": "Text from the article..",
+        "created_at": 1527695953341
+      }
+    }
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "lurker",
+          "name": "Dennis lurker",
+          "avatar_url": "img/avatar_url.com..."
+        }
+      ]
+    }
+  },
+  "DELETE /api/comments/comment_id": {
+    "descrition": "returns an empty object when the content is deleted based on the id supplied",
+    "queries": [],
+    "exampleResponse": {
+      "comment": {}
     }
   }
 }
