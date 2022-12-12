@@ -17,7 +17,7 @@ exports.fetchTopics = () => {
 };
 
 exports.fetchArticles = (sort_by = "created_at", order="desc", topic) => {
-    const columns = ["created_at", "title", "topic", "author", "body", "votes"];
+    const columns = ["created_at", "title", "topic", "author", "body", "votes", "comment_count"];
     const validOrder = ["asc", "desc"]
 
 
